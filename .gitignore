@@ -1,0 +1,28 @@
+## .NET
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio / Rider / VS Code
+.vs/
+.idea/
+*.swp
+.vscode/*
+!.vscode/extensions.json
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.nupkg
+*.snupkg
+
+## Test results
+TestResults/
+*.trx
