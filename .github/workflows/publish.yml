@@ -6,11 +6,21 @@ on:
       - "v*.*.*"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: nuget
+
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -27,8 +37,22 @@ jobs:
         run: dotnet test --no-build --configuration Release
 
       - name: Pack
-        run: dotnet pack src/HaMqttDiscoverable/HaMqttDiscoverable.csproj --no-build --configuration Release --output ./artifacts
+        run: >
+          dotnet pack
+          src/HaMqttDiscoverable/HaMqttDiscoverable.csproj
+          --no-build
+          --configuration Release
+          --output ./artifacts
 
-      # Requires a NUGET_API_KEY secret configured in the repository settings.
+      - name: Authenticate to NuGet.org
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ComputerComa
+
       - name: Push to NuGet.org
-        run: dotnet nuget push "./artifacts/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: >
+          dotnet nuget push "./artifacts/*.nupkg"
+          --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
