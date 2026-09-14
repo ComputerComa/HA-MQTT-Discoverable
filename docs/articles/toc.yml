@@ -1,0 +1,8 @@
+- name: Getting started
+  href: getting-started.md
+- name: Entities
+  href: entities.md
+- name: Media players
+  href: media-players.md
+- name: Connections & availability
+  href: connections.md

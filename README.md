@@ -4,6 +4,8 @@ A .NET library for creating [Home Assistant](https://www.home-assistant.io/) [MQ
 
 Inspired by the Python [`ha-mqtt-discoverable`](https://github.com/unixorn/ha-mqtt-discoverable) library.
 
+📖 **[Full documentation](https://computercoma.github.io/HA-MQTT-Discoverable/)** - getting started guide, entity-by-entity walkthroughs, and a full API reference generated from this repo's XML doc comments.
+
 ## Install
 
 ```bash
@@ -186,6 +188,17 @@ dotnet test
 ```
 
 Tests spin up a real, local, in-process MQTT broker ([MQTTnet.Server](https://github.com/dotnet/MQTTnet)) rather than mocking the MQTT client, so they exercise the actual wire protocol.
+
+## Documentation site
+
+The [`.github/workflows/docs.yml`](.github/workflows/docs.yml) workflow builds [`docs/`](docs) with [DocFX](https://dotnet.github.io/docfx/) - the getting-started/entities/media-player articles plus a full API reference generated from the library's XML doc comments - and deploys it to GitHub Pages on every push to `main` that touches `src/` or `docs/`. This needs GitHub Pages enabled once, under the repo's **Settings → Pages → Source: GitHub Actions**.
+
+To build and preview it locally:
+
+```bash
+dotnet tool install -g docfx   # once
+docfx docs/docfx.json --serve  # builds, then serves at http://localhost:8080
+```
 
 ## License
 

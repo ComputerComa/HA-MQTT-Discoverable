@@ -26,3 +26,10 @@ artifacts/
 ## Test results
 TestResults/
 *.trx
+
+## DocFX
+docs/_site/
+docs/api/*.yml
+docs/api/toc.yml
+docs/**/.manifest
+docs/log.json
