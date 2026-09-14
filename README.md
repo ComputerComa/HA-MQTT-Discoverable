@@ -84,8 +84,32 @@ Call `PublishDiscoveryAsync()` once after connecting (it also subscribes to the 
 | `Select` | `select` | Controllable value from a fixed list of options. |
 | `Light` | `light` | Controllable on/off + optional brightness, using Home Assistant's JSON light schema. |
 | `MediaPlayer` | *(composite)* | Not a single component - see [Media players](#media-players) below. |
+| `AlarmControlPanel` | `alarm_control_panel` | Arm/disarm/trigger. |
+| `LockEntity` | `lock` | Lock/unlock, optionally open. Named `LockEntity` (not `Lock`) to avoid colliding with `System.Threading.Lock`. |
+| `Siren` | `siren` | Controllable on/off alarm sounder. |
+| `Scene` | `scene` | Stateless trigger (like `Button`, under Home Assistant's "scene" domain). |
+| `Notify` | `notify` | Receives text messages Home Assistant sends it. |
+| `Date` / `Time` / `DateTimeEntity` | `date` / `time` / `datetime` | Controllable date/time values (ISO 8601). `DateTimeEntity`, not `DateTime`, to avoid colliding with `System.DateTime`. |
+| `DeviceTracker` | `device_tracker` | Read-only home/away presence. |
+| `Event` | `event` | Read-only discrete named events (e.g. a doorbell's press types). |
+| `Update` | `update` | Reports available software updates, with an optional Install action. |
+| `Image` | `image` | Publishes a still image (base64-encoded). |
+| `Camera` | `camera` | Publishes a live-updating image feed (base64-encoded). |
+| `Cover` | `cover` | Open/close/stop, optionally with position and/or tilt. |
+| `Valve` | `valve` | Open/close/stop, or an open-to-a-position valve. |
+| `Fan` | `fan` | On/off, optionally with speed percentage and/or named presets. |
+| `Humidifier` | `humidifier` | On/off with target humidity, optionally with named modes. |
+| `Vacuum` | `vacuum` | Start/pause/stop/return/clean-spot/locate, optionally with fan speed. |
+| `LawnMower` | `lawn_mower` | Start/dock/pause, with an activity report. |
+| `WaterHeater` | `water_heater` | Operating mode plus target/current temperature. |
+| `Climate` | `climate` | Thermostat: mode, temperature (or a range), and optional fan/swing/preset mode, humidity, and a separate power toggle. |
 
-More entity types (covers, climate, locks, ...) can be added by subclassing `HaEntity<TConfig>` following the same pattern used for the built-in types under `src/HaMqttDiscoverable/Entities`.
+`Cover`, `Fan`, `Humidifier`, `Vacuum`, `WaterHeater`, and `Climate` have more moving parts than the rest - see [Entities](https://computercoma.github.io/HA-MQTT-Discoverable/articles/entities.html) and their XML doc comments for what each optional feature needs.
+
+> [!NOTE]
+> Home Assistant's MQTT integration also has an `infrared` platform (`emitter`/`receiver` schemas) that's very new/still landing upstream as of this writing - it isn't implemented here yet.
+
+More entity types can be added by subclassing `HaEntity<TConfig>` following the same pattern used for the built-in types under `src/HaMqttDiscoverable/Entities`; `Switch` is the simplest starting point, `Cover`/`Climate` show the pattern for an entity with more than one command topic (via `RegisterAuxiliaryCommandTopic`).
 
 ## Media players
 

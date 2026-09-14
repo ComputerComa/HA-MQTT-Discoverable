@@ -13,12 +13,22 @@ public abstract class HaEntity<TConfig> : IAsyncDisposable
     where TConfig : EntityConfig
 {
     private bool _subscribed;
+    private bool _auxiliarySubscribed;
+    private readonly List<(string Topic, Func<string, Task> Handler)> _auxiliaryCommandTopics = new();
 
     /// <summary>The MQTT connection this entity publishes through.</summary>
     protected HaMqttConnection Connection { get; }
 
     /// <summary>The configuration this entity was created with.</summary>
     public TConfig Config { get; }
+
+    /// <summary>
+    /// The common MQTT topic prefix this entity's topics are built from (<c>{prefix}/{component}/{device}/{object}</c>,
+    /// with no trailing segment). Exposed so subclasses that need extra topics beyond
+    /// <see cref="StateTopic"/>/<see cref="CommandTopic"/> (e.g. a cover's tilt topics) can build
+    /// their own from the same root instead of hand-rolling it.
+    /// </summary>
+    protected string BaseTopic { get; }
 
     /// <summary>The retained topic Home Assistant reads the discovery payload from.</summary>
     public string DiscoveryTopic { get; }
@@ -53,11 +63,11 @@ public abstract class HaEntity<TConfig> : IAsyncDisposable
 
         var deviceId = Slug.Create(config.Device.Identifiers[0]);
         var objectId = Slug.Create(config.UniqueId);
-        var baseTopic = $"{connection.DiscoveryPrefix}/{config.Component}/{deviceId}/{objectId}";
+        BaseTopic = $"{connection.DiscoveryPrefix}/{config.Component}/{deviceId}/{objectId}";
 
-        DiscoveryTopic = $"{baseTopic}/config";
-        StateTopic = $"{baseTopic}/state";
-        CommandTopic = SupportsCommands ? $"{baseTopic}/set" : null;
+        DiscoveryTopic = $"{BaseTopic}/config";
+        StateTopic = $"{BaseTopic}/state";
+        CommandTopic = SupportsCommands ? $"{BaseTopic}/set" : null;
     }
 
     /// <summary>
@@ -92,6 +102,16 @@ public abstract class HaEntity<TConfig> : IAsyncDisposable
             await Connection.SubscribeAsync(CommandTopic, OnMessageReceivedAsync, Config.Qos, cancellationToken).ConfigureAwait(false);
             _subscribed = true;
         }
+
+        if (!_auxiliarySubscribed)
+        {
+            foreach (var (topic, handler) in _auxiliaryCommandTopics)
+            {
+                await Connection.SubscribeAsync(topic, handler, Config.Qos, cancellationToken).ConfigureAwait(false);
+            }
+
+            _auxiliarySubscribed = true;
+        }
     }
 
     /// <summary>Publishes a raw state payload to <see cref="StateTopic"/>.</summary>
@@ -115,6 +135,34 @@ public abstract class HaEntity<TConfig> : IAsyncDisposable
             await Connection.UnsubscribeAsync(CommandTopic, OnMessageReceivedAsync, cancellationToken).ConfigureAwait(false);
             _subscribed = false;
         }
+
+        await UnsubscribeAuxiliaryCommandTopicsAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Registers an additional MQTT topic this entity should subscribe to for commands, beyond
+    /// its primary <see cref="CommandTopic"/>. Used by entities with more than one independently
+    /// controllable feature (e.g. a cover's position, or a climate device's fan mode). Call this
+    /// from the constructor - subscription happens when <see cref="PublishDiscoveryAsync"/> is called.
+    /// </summary>
+    protected void RegisterAuxiliaryCommandTopic(string topic, Func<string, Task> handler)
+    {
+        _auxiliaryCommandTopics.Add((topic, handler));
+    }
+
+    private async Task UnsubscribeAuxiliaryCommandTopicsAsync(CancellationToken cancellationToken)
+    {
+        if (!_auxiliarySubscribed)
+        {
+            return;
+        }
+
+        foreach (var (topic, handler) in _auxiliaryCommandTopics)
+        {
+            await Connection.UnsubscribeAsync(topic, handler, cancellationToken).ConfigureAwait(false);
+        }
+
+        _auxiliarySubscribed = false;
     }
 
     /// <summary>Allows subclasses to add fields to the discovery payload that aren't part of <see cref="EntityConfig"/> directly.</summary>
@@ -162,5 +210,7 @@ public abstract class HaEntity<TConfig> : IAsyncDisposable
             await Connection.UnsubscribeAsync(CommandTopic, OnMessageReceivedAsync).ConfigureAwait(false);
             _subscribed = false;
         }
+
+        await UnsubscribeAuxiliaryCommandTopicsAsync(default).ConfigureAwait(false);
     }
 }
