@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D600172-3498-46F1-B9AA-3E58A0C89550}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaMqttDiscoverable", "src\HaMqttDiscoverable\HaMqttDiscoverable.csproj", "{453E194B-15CB-4CAF-BD2E-E28D92A208DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E5BB92BF-CD46-4B76-BBD7-FB5074FD7245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaMqttDiscoverable.Tests", "tests\HaMqttDiscoverable.Tests\HaMqttDiscoverable.Tests.csproj", "{A63F661F-E49B-4799-AE3C-7ACAED9F8C82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{40CCA27C-815B-4C9B-A0E0-BB9B18040664}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSensorDemo", "samples\SimpleSensorDemo\SimpleSensorDemo.csproj", "{81C49737-FFF8-47B8-8FE9-9734B20E4026}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{453E194B-15CB-4CAF-BD2E-E28D92A208DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{453E194B-15CB-4CAF-BD2E-E28D92A208DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{453E194B-15CB-4CAF-BD2E-E28D92A208DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{453E194B-15CB-4CAF-BD2E-E28D92A208DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A63F661F-E49B-4799-AE3C-7ACAED9F8C82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63F661F-E49B-4799-AE3C-7ACAED9F8C82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63F661F-E49B-4799-AE3C-7ACAED9F8C82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63F661F-E49B-4799-AE3C-7ACAED9F8C82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81C49737-FFF8-47B8-8FE9-9734B20E4026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81C49737-FFF8-47B8-8FE9-9734B20E4026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81C49737-FFF8-47B8-8FE9-9734B20E4026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81C49737-FFF8-47B8-8FE9-9734B20E4026}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{453E194B-15CB-4CAF-BD2E-E28D92A208DC} = {3D600172-3498-46F1-B9AA-3E58A0C89550}
+		{A63F661F-E49B-4799-AE3C-7ACAED9F8C82} = {E5BB92BF-CD46-4B76-BBD7-FB5074FD7245}
+		{81C49737-FFF8-47B8-8FE9-9734B20E4026} = {40CCA27C-815B-4C9B-A0E0-BB9B18040664}
+	EndGlobalSection
+EndGlobal
